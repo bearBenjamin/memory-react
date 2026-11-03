@@ -8,7 +8,7 @@
   <script src="vendor/react.development.js"></script>
   <script src="vendor/react-dom.development.js"></script>
   <script src="vendor/babel.min.js"></script>
-  <!--подключите файл данных-->
+  <script src="/data.js"></script>
 </head>
 
 <body>
@@ -17,8 +17,7 @@
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
     root.render(<App />);
-    // TODO: создайте компонент карточки
-    // TODO: передайте данные в компоненты
+    
     function App() {
       return (
         <section className="game container">
