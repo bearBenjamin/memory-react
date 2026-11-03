@@ -19,41 +19,44 @@
     root.render(<App />);
     
     function App() {
+      const isFinished = true;
+      const isShow = true;
       return (
         <section className="game container">
           <ul className="cards cards-theme-cars">
-            <li className="card card-show">
-              <img src="img/cats-1.jpg" width="204" height="144" alt="Котик"/>
-            </li>
-            <CardImage/>
-            <CardImage/>
-            <CardImage/>
-            <li className="card card-finished">
-              <img src="img/cats-5.jpg" width="204" height="144" alt="Котик"/>
-            </li>
-            <li className="card card-show">
-              <img src="img/cats-6.jpg" width="204" height="144" alt="Котик"/>
-            </li>
-            <CardImage/>
-            <li className="card card-finished">
-              <img src="img/cats-5.jpg" width="204" height="144" alt="Котик"/>
-            </li>
-            <CardImage/>
-            <CardImage/>
-            <CardImage/>
-            <CardImage/>
+            <CardImage isShow url="img/cats-1.jpg" />
+            <CardImage url="img/cats-1.jpg" />
+            <CardImage url="img/cats-1.jpg" />
+            <CardImage url="img/cats-1.jpg" />
+            <CardImage isFinished url="img/cats-5.jpg" />
+            <CardImage isShow url="img/cats-6.jpg" />
+            <CardImage url="img/cats-1.jpg" />
+            <CardImage isFinished url="img/cats-5.jpg" />
+            <CardImage url="img/cats-1.jpg" />
+            <CardImage url="img/cats-1.jpg" />
+            <CardImage url="img/cats-1.jpg" />
+            <CardImage url="img/cats-1.jpg" />
           </ul>
         </section>
       );
+    }
 
-      function CardImage() {
+      function CardImage({isFinished, isShow, url}) {
         return (
-          <li className="card">
-            <img src="img/cats-1.jpg" width="204" height="144" alt="Котик"/>
+          <li className={`card ${isFinished ? 'card-finished': ''} ${isShow ? 'card-show' : ''}`}>
+            <img src={url} width="204" height="144" alt="Котик"/>
           </li>
         );
       }
-    }
+
+      // function CardFinish({isFinished, url}) {
+      //   return (
+      //     <li className=>
+      //         <img src={url} width="204" height="144" alt="Котик"/>
+      //       </li>
+      //   );
+      // }
+    
   </script>
 </body>
 
