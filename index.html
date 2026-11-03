@@ -16,32 +16,37 @@
   <script type="text/babel">
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
-    root.render(<App images={images} />);
+    root.render(<App images={images} visibleItems={visibleItems} finishedItems={finishedItems} />);
 
-    function App({ images = [] }) {
-      const cards = images.map((item) => (
-        <CardImage
-          url={item.url}
-          isFinished={item.id === 'YdAqiUkUoWA' || item.id === 'YdAqiUkUoWA1' || item.id === 'w1JE5duY62M' || item.id === 'w1JE5duY62M1'}
-          isShow={item.id === 'hX_hf2lPpUU' || item.id === '3tYZjGSBwbk'}
-          key={item.id}
-        />
-      )
-      )
+    function App({ images = [], visibleItems = [], finishedItems = [] }) {
       return (
         <section className="game container">
-          <ul className="cards cards-theme-cars">
-            {cards}
-          </ul>
+          <Grid images={images} visibleItems={visibleItems} finishedItems={finishedItems} />
         </section>
       );
     }
 
-    function CardImage({ isFinished, isShow, url }) {
-      console.log('isFinished: ', isFinished);
+    function Grid({ images, visibleItems, finishedItems }) {
       return (
-        <li className={`card ${isFinished ? 'card-finished' : ''} ${isShow ? 'card-show' : ''}`}>
-          <img src={url} width="204" height="144" alt="Котик" />
+        <ul className="cards">
+          {images.map((item) => (
+            <Card
+              key={item.id}
+              url={item.url}
+              description={item.description}
+              isShow={visibleItems.includes(item.id)}
+              isFinished={finishedItems.includes(item.id)}
+            />
+          ))}
+        </ul>
+      );
+    }
+
+    function Card({ isFinished, isShow, url, description }) {
+      const className = `card ${isFinished ? 'card-finished' : ''} ${isShow ? 'card-show' : ''}`
+      return (
+        <li className={className}>
+          <img src={url} width="204" height="144" alt={description} />
         </li>
       );
     }
