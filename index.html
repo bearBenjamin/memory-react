@@ -18,40 +18,62 @@
 
     function App({images = []}) {
       // TODO: добавьте состояние для счётчика шагов
+      const [stepsCount, setStepsCount] = React.useState(0);
+
+      const checkItems = () => {
+        setStepsCount((i) => i + 1);
+      };
+
       return (
         <section className="game container">
-          <div className="steps">Шаг {42}</div>
-          <Grid images={images}/>
+          <div className="steps">Шаг {stepsCount}</div>
+          <Grid images={images} checkItems={checkItems}/>
         </section>
       );
     }
 
-    function Grid({images = [], visibleItems = [], finishedItems = []}) {
+    function Grid({images = [], checkItems, finishedItems = []}) {
       // TODO: добавьте состояние списка открытых карточек
+      const [visibleItems, setVisible] = React.useState([]);
+
+      const handleCardClick = (id) => {
+        if (visibleItems.includes(id)) {
+          return;
+        }
+
+        checkItems();
+        setVisible((items) => [...items, id])
+      };
+     
       return (
         <ul className="cards">
           {images.map((item) => (
             <Card
               key={item.id}
+              id={item.id}
               url={item.url}
               description={item.description}
               isVisible={visibleItems.includes(item.id)}
               isFinished={finishedItems.includes(item.id)}
+              onCardClick={handleCardClick}
             />
           ))}
         </ul>
       );
     }
 
-    function Card({url, description, isVisible, isFinished}) {
+    function Card({id, url, description, isVisible, isFinished, onCardClick}) {
       // TODO: добавьте обработку события
+      const handleClick = () => {
+        onCardClick(id);
+      };
       const className = `${
         isVisible ? 'card-show' : ''
       } ${
         isFinished ? 'card-finished' : ''
       }`;
       return (
-        <li className={`card ${className}`}>
+        <li className={`card ${className}`} onClick={handleClick}>
           <img
             width="204" height="144"
             src={url}
