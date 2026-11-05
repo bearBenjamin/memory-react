@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
   <meta charset="UTF-8">
   <title>Игра Мемори</title>
@@ -10,23 +9,25 @@
   <script src="vendor/babel.min.js"></script>
   <script src="data.js"></script>
 </head>
-
 <body>
   <div id="root"></div>
   <script type="text/babel">
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
-    root.render(<App images={images} visibleItems={visibleItems} finishedItems={finishedItems} />);
+    root.render(<App images={images}/>);
 
-    function App({ images = [], visibleItems = [], finishedItems = [] }) {
+    function App({images = []}) {
+      // TODO: добавьте состояние для счётчика шагов
       return (
         <section className="game container">
-          <Grid images={images} visibleItems={visibleItems} finishedItems={finishedItems} />
+          <div className="steps">Шаг {42}</div>
+          <Grid images={images}/>
         </section>
       );
     }
 
-    function Grid({ images, visibleItems, finishedItems }) {
+    function Grid({images = [], visibleItems = [], finishedItems = []}) {
+      // TODO: добавьте состояние списка открытых карточек
       return (
         <ul className="cards">
           {images.map((item) => (
@@ -34,7 +35,7 @@
               key={item.id}
               url={item.url}
               description={item.description}
-              isShow={visibleItems.includes(item.id)}
+              isVisible={visibleItems.includes(item.id)}
               isFinished={finishedItems.includes(item.id)}
             />
           ))}
@@ -42,16 +43,23 @@
       );
     }
 
-    function Card({ isFinished, isShow, url, description }) {
-      const className = `card ${isFinished ? 'card-finished' : ''} ${isShow ? 'card-show' : ''}`
+    function Card({url, description, isVisible, isFinished}) {
+      // TODO: добавьте обработку события
+      const className = `${
+        isVisible ? 'card-show' : ''
+      } ${
+        isFinished ? 'card-finished' : ''
+      }`;
       return (
-        <li className={className}>
-          <img src={url} width="204" height="144" alt={description} />
+        <li className={`card ${className}`}>
+          <img
+            width="204" height="144"
+            src={url}
+            alt={description}
+          />
         </li>
       );
     }
-
   </script>
 </body>
-
 </html>
