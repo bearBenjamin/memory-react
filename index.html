@@ -19,8 +19,7 @@
     const root = ReactDOM.createRoot(container);
     root.render(<App images={images} />);
 
-    function App({ images = [] }) {
-      // TODO: добавьте состояние для счётчика шагов
+    const useGame = (images) => {
       const [stepsCount, setStepsCount] = React.useState(0);
       const [finishedItems, setFinishedItems] = React.useState([]);
 
@@ -38,14 +37,36 @@
         setStepsCount((i) => i + 1);
       };
 
-      const sumPair = images.length / 2;
-      const countFinishedItems = finishedItems.length / 2;
-      const isGameOver = finishedItems.length === images.length;
-
       const handleReset = () => {
         setFinishedItems([]);
         setStepsCount(0);
       };
+
+      const sumPair = images.length / 2;
+      const countFinishedItems = finishedItems.length / 2;
+      const isGameOver = finishedItems.length === images.length;
+
+      return {
+        finishedItems,
+        handleReset,
+        stepsCount,
+        checkItems,
+        sumPair,
+        countFinishedItems,
+        isGameOver
+      }
+    }
+
+    function App({ images = [] }) {
+      const {
+        finishedItems,
+        handleReset,
+        stepsCount,
+        checkItems,
+        sumPair,
+        countFinishedItems,
+        isGameOver
+      } = useGame(images);
 
       return (
         <section className="game container">
@@ -90,7 +111,6 @@
 
         switch (visibleItems.length) {
           case 0:
-          case 2:
             setVisibleItems([id]);
             break;
           case 1:
@@ -110,9 +130,7 @@
           {images.map((item) => (
             <Card
               key={item.id}
-              id={item.id}
-              url={item.url}
-              description={item.description}
+              item={item}
               isVisible={visibleItems.includes(item.id)}
               isFinished={finishedItems.includes(item.id)}
               onCardClick={handleCardClick}
@@ -122,13 +140,17 @@
       );
     }
 
-    function Card({ id, url, description, isVisible, isFinished, onCardClick }) {
+    function Card({ item, isVisible, isFinished, onCardClick }) {
+      const {id, url, description} = item;
       // TODO: добавьте обработку события
       const handleClick = () => {
         onCardClick(id);
       };
-      const className = `${isVisible ? 'card-show' : ''
-        } ${isFinished ? 'card-finished' : ''
+      
+      const className = `${
+      isVisible ? 'card-show' : ''
+        } ${
+      isFinished ? 'card-finished' : ''
         }`;
       return (
         <li className={`card ${className}`} onClick={handleClick}>
