@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <title>Игра Мемори</title>
@@ -8,43 +9,102 @@
   <script src="vendor/react-dom.development.js"></script>
   <script src="vendor/babel.min.js"></script>
   <script src="data.js"></script>
+  <script src="settings.js"></script>
 </head>
+
 <body>
   <div id="root"></div>
   <script type="text/babel">
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
-    root.render(<App images={images}/>);
+    root.render(<App images={images} />);
 
-    function App({images = []}) {
+    function App({ images = [] }) {
       // TODO: добавьте состояние для счётчика шагов
       const [stepsCount, setStepsCount] = React.useState(0);
+      const [finishedItems, setFinishedItems] = React.useState([]);
 
-      const checkItems = () => {
+      const checkItems = (first, second) => {
+
+        if (Math.abs(first.length - second.length) === 1) {
+          if (first.slice(0, -1) === second) {
+            setFinishedItems((items) => [...items, first, second])
+          }
+          if (first === second.slice(0, -1)) {
+            setFinishedItems((items) => [...items, first, second]);
+          }
+        }
+
         setStepsCount((i) => i + 1);
+      };
+
+      const sumPair = images.length / 2;
+      const countFinishedItems = finishedItems.length / 2;
+      const isGameOver = finishedItems.length === images.length;
+
+      const handleReset = () => {
+        setFinishedItems([]);
+        setStepsCount(0);
       };
 
       return (
         <section className="game container">
+          <Progress value={finishedItems.length} max={images.length} />
+          <p className="progress-description">Открыто <span>{countFinishedItems}</span> / <span>{sumPair}</span></p>
           <div className="steps">Шаг {stepsCount}</div>
-          <Grid images={images} checkItems={checkItems}/>
+          <Grid images={images} checkItems={checkItems} finishedItems={finishedItems} />
+          {isGameOver && (<Modal className="modal-box">
+            <h3 className="modal-caption">Победа!</h3>
+            <p className="modal-description">Вы собрали все пары за {stepsCount} шагов</p>
+            <button className="button modal-button" type="button" onClick={handleReset}>Новая игра</button>
+          </Modal>)}
         </section>
       );
     }
 
-    function Grid({images = [], checkItems, finishedItems = []}) {
-      // TODO: добавьте состояние списка открытых карточек
-      const [visibleItems, setVisible] = React.useState([]);
+    function Progress({value, max}) {
+      return (
+        <div className="progress-wrapper">
+          <div className="progress" style={{width: `${value / max * 100}%`}}></div>
+        </div>
+      )
+    }
+
+    function Modal({ children, className }) {
+      return (
+        <div className="modal">
+          <div className={className}>
+            {children}
+          </div>
+        </div>
+      )
+    }
+
+    function Grid({ images = [], checkItems, finishedItems }) {
+      const [visibleItems, setVisibleItems] = React.useState([]);
 
       const handleCardClick = (id) => {
-        if (visibleItems.includes(id)) {
+        if (visibleItems.includes(id) || finishedItems.includes(id)) {
           return;
         }
 
-        checkItems();
-        setVisible((items) => [...items, id])
+        switch (visibleItems.length) {
+          case 0:
+          case 2:
+            setVisibleItems([id]);
+            break;
+          case 1:
+            setVisibleItems((items) => [...items, id]);
+            checkItems(visibleItems[0], id);
+            setTimeout(() => {
+              setVisibleItems([]);
+            }, TIMEOUT);
+            break;
+          default:
+            setVisibleItems([]);
+        }
       };
-     
+
       return (
         <ul className="cards">
           {images.map((item) => (
@@ -62,16 +122,14 @@
       );
     }
 
-    function Card({id, url, description, isVisible, isFinished, onCardClick}) {
+    function Card({ id, url, description, isVisible, isFinished, onCardClick }) {
       // TODO: добавьте обработку события
       const handleClick = () => {
         onCardClick(id);
       };
-      const className = `${
-        isVisible ? 'card-show' : ''
-      } ${
-        isFinished ? 'card-finished' : ''
-      }`;
+      const className = `${isVisible ? 'card-show' : ''
+        } ${isFinished ? 'card-finished' : ''
+        }`;
       return (
         <li className={`card ${className}`} onClick={handleClick}>
           <img
@@ -84,4 +142,5 @@
     }
   </script>
 </body>
+
 </html>
