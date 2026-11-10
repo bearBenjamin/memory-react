@@ -19,6 +19,71 @@
     const root = ReactDOM.createRoot(container);
     root.render(<App images={images} />);
 
+    function App({ images = [] }) {
+      const [page, setPage] = React.useState('results');
+
+      const getPage = (route) => {
+        if (route === 'game') {
+          return <GamePage images={images} />;
+        }
+
+        if (route === 'results') {
+          return <ResultsPage />;
+        }
+
+        return null;
+      }
+
+      return getPage(page);
+    }
+
+    function ResultsPage() {
+      return (
+        <section class="result container">
+          <h2>Лучшие результаты:</h2>
+          <p>Вы завершили игру за <b>16 шагов</b>, так держать!</p>
+          <table class="result-table">
+            <thead>
+              <tr class="result-table-row">
+                <th>Место</th>
+                <th>Имя</th>
+                <th>Шаги</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="result-table-row">
+                <td>1</td>
+                <td>Вася</td>
+                <td>13</td>
+              </tr>
+              <tr class="result-table-row active">
+                <td>2</td>
+                <td>Ваш результат</td>
+                <td>16</td>
+              </tr>
+              <tr class="result-table-row">
+                <td>3</td>
+                <td>Аня</td>
+                <td>24</td>
+              </tr>
+              <tr class="result-table-row">
+                <td>4</td>
+                <td>Петя</td>
+                <td>25</td>
+              </tr>
+              <tr class="result-table-row">
+                <td>5</td>
+                <td>Маша</td>
+                <td>27</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Хотите попробовать ещё раз?</p>
+          <button class="button result-button" type="button">Новая игра</button>
+        </section>
+      );
+    }
+
     const useGame = (images) => {
       const [stepsCount, setStepsCount] = React.useState(0);
       const [finishedItems, setFinishedItems] = React.useState([]);
@@ -57,7 +122,7 @@
       }
     }
 
-    function App({ images = [] }) {
+    function GamePage({ images = [] }) {
       const {
         finishedItems,
         handleReset,
@@ -83,10 +148,10 @@
       );
     }
 
-    function Progress({value, max}) {
+    function Progress({ value, max }) {
       return (
         <div className="progress-wrapper">
-          <div className="progress" style={{width: `${value / max * 100}%`}}></div>
+          <div className="progress" style={{ width: `${value / max * 100}%` }}></div>
         </div>
       )
     }
@@ -141,16 +206,13 @@
     }
 
     function Card({ item, isVisible, isFinished, onCardClick }) {
-      const {id, url, description} = item;
+      const { id, url, description } = item;
       // TODO: добавьте обработку события
       const handleClick = () => {
         onCardClick(id);
       };
-      
-      const className = `${
-      isVisible ? 'card-show' : ''
-        } ${
-      isFinished ? 'card-finished' : ''
+      const className = `${isVisible ? 'card-show' : ''
+        } ${isFinished ? 'card-finished' : ''
         }`;
       return (
         <li className={`card ${className}`} onClick={handleClick}>
